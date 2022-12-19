@@ -1,12 +1,11 @@
 import {
-  deleteUserSuccess,
   getSingleUserSuccess,
   getUsersSuccess,
   requestFail,
   requestPending,
 } from "./UserSlice"
 import { db } from "../../firebase"
-import { collection, doc, getDoc, getDocs, deleteDoc } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs } from "firebase/firestore"
 
 export const fetchAllUsers = () => async (dispatch) => {
   dispatch(requestPending())
@@ -36,15 +35,5 @@ export const fetchSingleUser = (userId) => async (dispatch) => {
     }
   } catch (err) {
     console.log(err)
-  }
-}
-
-export const deleteAUser = (userId) => async (dispatch) => {
-  dispatch(requestPending())
-  try {
-    const docRef = doc(db, "users", userId)
-    await deleteDoc(docRef)
-  } catch (error) {
-    console.log(error)
   }
 }

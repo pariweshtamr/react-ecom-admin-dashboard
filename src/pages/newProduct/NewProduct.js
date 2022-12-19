@@ -1,15 +1,20 @@
 import { DriveFolderUploadOutlined } from "@mui/icons-material"
+import { LoadingButton } from "@mui/lab"
 import { addDoc, collection, serverTimestamp } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import { db, storage } from "../../firebase"
 import "./newProduct.scss"
+import SendIcon from "@mui/icons-material/Send"
+
 const NewProduct = ({ inputs }) => {
   const [file, setFile] = useState("")
   const [data, setData] = useState({})
   const [percent, setPercent] = useState(null)
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -59,15 +64,25 @@ const NewProduct = ({ inputs }) => {
 
   const handleAdd = async (e) => {
     e.preventDefault()
+    setLoading(true)
     try {
-      await addDoc(collection(db, "products"), {
-        ...data,
-        status: "active",
-        timestamp: serverTimestamp(),
-      })
+      await toast.promise(
+        addDoc(collection(db, "products"), {
+          ...data,
+          status: "active",
+          timestamp: serverTimestamp(),
+        }),
+        {
+          pending: "Adding product to database",
+          success: "Product has been successfully added to db",
+          error: "Something went wrong!",
+        }
+      )
+      setLoading(false)
       navigate(-1)
     } catch (error) {
       console.log(error)
+      setLoading(false)
     }
   }
 
@@ -171,12 +186,16 @@ const NewProduct = ({ inputs }) => {
                 </option>
               </select>
 
-              <button
+              <LoadingButton
                 type="submit"
                 disabled={percent !== null && percent < 100}
+                loading={loading}
+                loadingPosition="end"
+                variant="contained"
+                endIcon={<SendIcon />}
               >
                 ADD PRODUCT
-              </button>
+              </LoadingButton>
             </form>
           </div>
         </div>

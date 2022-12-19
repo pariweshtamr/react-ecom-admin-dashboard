@@ -1,23 +1,23 @@
 import {
   AccountBalanceOutlined,
+  InventoryOutlined,
   KeyboardArrowUp,
-  MonetizationOnOutlined,
   PersonOutline,
   ShoppingCartOutlined,
 } from "@mui/icons-material"
 import "./widget.scss"
 
-const Widget = ({ type }) => {
+const Widget = ({ type, totalUsers, totalProducts }) => {
   let data
 
   // temp
-  const amount = 100
   const percent = 20
 
   switch (type) {
     case "user":
       data = {
         title: "USERS",
+        number: totalUsers,
         isMoney: false,
         link: "See all users",
         icon: (
@@ -41,13 +41,14 @@ const Widget = ({ type }) => {
         ),
       }
       break
-    case "earning":
+    case "product":
       data = {
-        title: "EARNINGS",
-        isMoney: true,
-        link: "View net earnings",
+        title: "PRODUCTS",
+        number: totalProducts,
+        isMoney: false,
+        link: "View all products",
         icon: (
-          <MonetizationOnOutlined
+          <InventoryOutlined
             className="icon"
             style={{ color: "green", background: "rgba(0,128,0,0.2)" }}
           />
@@ -76,7 +77,7 @@ const Widget = ({ type }) => {
         <span className="title">{data?.title}</span>
         <span className="counter">
           {data?.isMoney && "$"}
-          {amount}
+          {data.number}
         </span>
         <span className="link">{data?.link}</span>
       </div>

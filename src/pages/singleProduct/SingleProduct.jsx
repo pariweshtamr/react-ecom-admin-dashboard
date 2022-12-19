@@ -1,10 +1,8 @@
 import "./singleProduct.scss"
 import MainLayout from "../../components/layout/MainLayout"
-import TableComponent from "../../components/table/Table"
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchSingleUser } from "../../redux/user/UserAction"
 import { fetchSingleProduct } from "../../redux/product/ProductAction"
 
 const SingleProduct = () => {

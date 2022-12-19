@@ -2,17 +2,21 @@ import { DriveFolderUploadOutlined } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import MainLayout from "../../components/layout/MainLayout"
 import { doc, serverTimestamp, setDoc } from "firebase/firestore"
-
-import "./newUser.scss"
 import { auth, db, storage } from "../../firebase"
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { createUserWithEmailAndPassword } from "firebase/auth"
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
 import { useNavigate } from "react-router-dom"
+import SendIcon from "@mui/icons-material/Send"
+
+import "./newUser.scss"
+import { toast } from "react-toastify"
+import { LoadingButton } from "@mui/lab"
 
 const NewUser = ({ inputs }) => {
   const [file, setFile] = useState("")
   const [data, setData] = useState({})
   const [percent, setPercent] = useState(null)
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -62,6 +66,7 @@ const NewUser = ({ inputs }) => {
 
   const handleAdd = async (e) => {
     e.preventDefault()
+    setLoading(true)
     try {
       const res = await createUserWithEmailAndPassword(
         auth,
@@ -69,13 +74,22 @@ const NewUser = ({ inputs }) => {
         data.password
       )
 
-      await setDoc(doc(db, "users", res.user.uid), {
-        ...data,
-        timeStamp: serverTimestamp(),
-      })
+      await toast.promise(
+        setDoc(doc(db, "users", res.user.uid), {
+          ...data,
+          timeStamp: serverTimestamp(),
+        }),
+        {
+          pending: "Adding user to db",
+          success: "User added successfully",
+          error: "Something went wrong!",
+        }
+      )
+      setLoading(false)
       navigate(-1)
     } catch (error) {
       console.log(error)
+      setLoading(false)
       if (error.message.includes("EMAIL_EXISTS")) {
       }
     }
@@ -120,6 +134,7 @@ const NewUser = ({ inputs }) => {
                     type={input.type}
                     placeholder={input.placeholder}
                     onChange={handleInput}
+                    required
                   />
                 </div>
               ))}
@@ -139,12 +154,16 @@ const NewUser = ({ inputs }) => {
                 </option>
               </select>
 
-              <button
+              <LoadingButton
                 type="submit"
                 disabled={percent !== null && percent < 100}
+                loading={loading}
+                loadingPosition="end"
+                variant="contained"
+                endIcon={<SendIcon />}
               >
                 ADD USER
-              </button>
+              </LoadingButton>
             </form>
           </div>
         </div>

@@ -5,7 +5,6 @@ import "./login.scss"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { loginSuccess } from "../../redux/auth/AuthSlice"
-import { fetchSingleUser } from "../../redux/user/UserAction"
 
 const Login = () => {
   const [err, setErr] = useState(false)

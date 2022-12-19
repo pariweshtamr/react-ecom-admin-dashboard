@@ -1,28 +1,34 @@
 import { DataGrid } from "@mui/x-data-grid"
+import { deleteDoc, doc } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import { userColumns } from "../../data/datatableSource"
-import { deleteAUser, fetchAllUsers } from "../../redux/user/UserAction"
-
+import { db } from "../../firebase"
+import { fetchAllUsers } from "../../redux/user/UserAction"
 import "./userList.scss"
 const List = () => {
   const dispatch = useDispatch()
   const [data, setData] = useState([])
   const [shouldFetch, setShouldFetch] = useState(true)
   const { isLoading, users } = useSelector((state) => state.user)
-
   useEffect(() => {
     shouldFetch && dispatch(fetchAllUsers())
     setShouldFetch(false)
     setData(users)
-  }, [dispatch, users, shouldFetch])
+  }, [users, dispatch, shouldFetch])
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      dispatch(deleteAUser(id)) &&
+      try {
+        await deleteDoc(doc(db, "users", id))
         setData(data.filter((item) => item.id !== id))
+        toast.success("User deleted successfully")
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
   const actionColumn = [
