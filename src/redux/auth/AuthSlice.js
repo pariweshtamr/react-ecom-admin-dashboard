@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-  currentUser: localStorage.getItem("currentUser")
+  currentAuthUser: localStorage.getItem("currentUser")
     ? JSON.parse(localStorage.getItem("currentUser"))
     : null,
 
@@ -21,12 +21,12 @@ const authSlice = createSlice({
       state.error = payload || {}
     },
     loginSuccess: (state, { payload }) => {
-      state.currentUser = payload
-      localStorage.setItem("currentUser", JSON.stringify(payload))
+      state.currentAuthUser = payload
+      localStorage.setItem("currentAuthUser", JSON.stringify(payload))
     },
     logoutSuccess: (state) => {
-      state.currentUser = null
-      localStorage.removeItem("currentUser")
+      state.currentAuthUser = null
+      localStorage.removeItem("currentAuthUser")
     },
   },
 })

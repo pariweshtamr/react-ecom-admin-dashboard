@@ -1,22 +1,25 @@
 import { DataGrid } from "@mui/x-data-grid"
 import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import { productColumns } from "../../data/datatableSource"
 import { db } from "../../firebase"
+import { fetchAllProducts } from "../../redux/product/ProductAction"
 
 import "./productList.scss"
 
 const ProductList = () => {
+  const dispatch = useDispatch()
   const [data, setData] = useState([])
   const { isLoading, products } = useSelector((state) => state.product)
 
   useEffect(() => {
+    !products.length && dispatch(fetchAllProducts())
     setData(products)
-  }, [products])
+  }, [products, dispatch])
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {

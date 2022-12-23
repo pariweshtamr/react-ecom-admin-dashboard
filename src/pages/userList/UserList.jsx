@@ -9,16 +9,14 @@ import { userColumns } from "../../data/datatableSource"
 import { db } from "../../firebase"
 import { fetchAllUsers } from "../../redux/user/UserAction"
 import "./userList.scss"
-const List = () => {
+const UserList = () => {
   const dispatch = useDispatch()
   const [data, setData] = useState([])
-  const [shouldFetch, setShouldFetch] = useState(true)
   const { isLoading, users } = useSelector((state) => state.user)
   useEffect(() => {
-    shouldFetch && dispatch(fetchAllUsers())
-    setShouldFetch(false)
+    !users.length && dispatch(fetchAllUsers())
     setData(users)
-  }, [users, dispatch, shouldFetch])
+  }, [users, dispatch])
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -85,4 +83,4 @@ const List = () => {
   )
 }
 
-export default List
+export default UserList

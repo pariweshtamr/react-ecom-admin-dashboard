@@ -6,7 +6,6 @@ import {
 } from "react-router-dom"
 import { productInputs, userInputs } from "./data/formSource"
 import Home from "./pages/home/Home"
-import List from "./pages/userList/UserList"
 import Login from "./pages/login/Login"
 import SingleUser from "./pages/singleUser/SingleUser"
 import "./App.scss"
@@ -17,13 +16,15 @@ import ProductList from "./pages/productsList/ProductList"
 import SingleProduct from "./pages/singleProduct/SingleProduct"
 import NewUser from "./pages/newUser/NewUser"
 import NewProduct from "./pages/newProduct/NewProduct"
+import UserList from "./pages/userList/UserList"
+import OrderList from "./pages/orders/OrderList"
 
 function App() {
   const { darkMode } = useSelector((state) => state.darkMode)
   const [darkModeState, setDarkModeState] = useState(false)
-  const { currentUser } = useSelector((state) => state.auth)
+  const { currentAuthUser } = useSelector((state) => state.auth)
   const RequireAuth = ({ children }) => {
-    return currentUser ? children : <Navigate to="/login" />
+    return currentAuthUser ? children : <Navigate to="/login" />
   }
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function App() {
                 index
                 element={
                   <RequireAuth>
-                    <List />
+                    <UserList />
                   </RequireAuth>
                 }
               />
@@ -96,6 +97,17 @@ function App() {
                 element={
                   <RequireAuth>
                     <NewProduct inputs={productInputs} />
+                  </RequireAuth>
+                }
+              />
+            </Route>
+
+            <Route path="orders">
+              <Route
+                index
+                element={
+                  <RequireAuth>
+                    <OrderList />
                   </RequireAuth>
                 }
               />
